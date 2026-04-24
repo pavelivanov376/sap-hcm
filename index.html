@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP SuccessFactors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f4e8 0%, #d0ebd0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 100, 0, 0.12);
+            padding: 50px 50px 90px 50px;
+            min-height: 600px;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title slide */
+        .title-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 460px;
+            text-align: center;
+        }
+
+        .sap-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #009A44, #006B2B);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2em;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(0, 154, 68, 0.35);
+        }
+
+        h1 {
+            color: #006B2B;
+            font-size: 2.8em;
+            margin-bottom: 16px;
+            line-height: 1.25;
+        }
+
+        .title-subtitle {
+            color: #555;
+            font-size: 1.15em;
+            font-style: italic;
+        }
+
+        h2 {
+            color: #006B2B;
+            font-size: 1.9em;
+            margin-bottom: 28px;
+        }
+
+        h3 {
+            color: #009A44;
+            font-size: 1.25em;
+            margin-top: 22px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: #333;
+            font-size: 1.07em;
+            line-height: 1.75;
+            margin-bottom: 14px;
+        }
+
+        ul {
+            margin: 14px 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            color: #333;
+            font-size: 1.02em;
+            line-height: 1.65;
+            margin-bottom: 14px;
+            padding-left: 22px;
+            position: relative;
+        }
+
+        li::before {
+            content: '▸';
+            color: #009A44;
+            position: absolute;
+            left: 0;
+            font-size: 0.9em;
+            top: 2px;
+        }
+
+        .term {
+            font-weight: 700;
+            color: #006B2B;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Stat callout */
+        .stat-callout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 30px auto;
+            background: linear-gradient(135deg, #009A44, #006B2B);
+            color: white;
+            border-radius: 16px;
+            padding: 40px 60px;
+            max-width: 480px;
+            box-shadow: 0 8px 28px rgba(0, 154, 68, 0.3);
+        }
+
+        .stat-number {
+            font-size: 4.5em;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1.15em;
+            opacity: 0.92;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Info card */
+        .info-card {
+            background: #f4fbf6;
+            border-left: 4px solid #009A44;
+            padding: 14px 18px;
+            margin-bottom: 13px;
+            border-radius: 6px;
+        }
+
+        .info-card h4 {
+            color: #006B2B;
+            font-size: 1.08em;
+            margin-bottom: 5px;
+        }
+
+        .info-card p {
+            font-size: 0.97em;
+            margin: 0;
+            color: #444;
+        }
+
+        /* Two columns */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        /* Steps */
+        .steps-list {
+            counter-reset: step;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .steps-list li {
+            counter-increment: step;
+            padding-left: 48px;
+            margin-bottom: 16px;
+        }
+
+        .steps-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            background: #009A44;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        /* Link box */
+        .link-box {
+            background: #e8f4e8;
+            border: 1px solid #b2d8b2;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            font-size: 0.92em;
+        }
+
+        .link-box a {
+            color: #006B2B;
+            word-break: break-all;
+        }
+
+        a {
+            color: #009A44;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #009A44;
+        }
+
+        /* Video placeholder */
+        .video-placeholder {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 260px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .video-placeholder:hover {
+            transform: scale(1.01);
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 154, 68, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .play-btn::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 16px solid transparent;
+            border-bottom: 16px solid transparent;
+            border-left: 28px solid white;
+            margin-left: 5px;
+        }
+
+        .video-label {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.05em;
+            text-align: center;
+            padding: 0 30px;
+        }
+
+        /* Task grid */
+        .task-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .task-item {
+            background: #f4fbf6;
+            border: 1.5px solid #b2d8b2;
+            border-radius: 10px;
+            padding: 16px 18px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .task-icon {
+            width: 34px;
+            height: 34px;
+            background: #009A44;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .task-text {
+            color: #333;
+            font-size: 0.97em;
+            line-height: 1.5;
+        }
+
+        /* Navigation */
+        .navigation {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 14px;
+        }
+
+        button {
+            background: #009A44;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #006B2B;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #009A44, #00c957);
+            border-radius: 12px 0 0 0;
+            transition: width 0.35s ease;
+        }
+
+        .slide-counter {
+            position: absolute;
+            bottom: 34px;
+            right: 40px;
+            color: #aaa;
+            font-size: 0.93em;
+        }
+
+        /* Thank you slide */
+        .thankyou-slide {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 420px;
+            text-align: center;
+        }
+
+        .thankyou-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px 90px 20px;
+            }
+            h1 { font-size: 1.9em; }
+            h2 { font-size: 1.5em; }
+            .two-columns, .task-grid { grid-template-columns: 1fr; }
+            .stat-number { font-size: 3.5em; }
+            button { padding: 10px 20px; font-size: 0.92em; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="progress" id="progress"></div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active">
+        <div class="title-slide">
+            <div class="sap-logo">SAP</div>
+            <h1>SAP SuccessFactors</h1>
+            <p class="title-subtitle">Облачно решение за управление на човешките ресурси</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Fortune 500 Stat -->
+    <div class="slide">
+        <h2>SAP в глобалния бизнес</h2>
+        <p>SAP е водеща технологична компания, чиито решения за управление на бизнес процеси се използват от най-успешните организации в света.</p>
+        <div class="stat-callout">
+            <div class="stat-number">90%+</div>
+            <div class="stat-label">от компаниите във Fortune 500<br>използват SAP</div>
+        </div>
+        <p style="text-align:center; color:#666; font-size:0.95em; margin-top:10px;">Доверено решение за глобалния бизнес елит</p>
+    </div>
+
+    <!-- Slide 3: Video -->
+    <div class="slide">
+        <h2>Видео преглед</h2>
+        <p>Разгледайте пълен преглед на възможностите на SAP SuccessFactors HCM решението:</p>
+        <a href="https://www.youtube.com/watch?v=CB4pDXAnmME" target="_blank">
+            <div class="video-placeholder">
+                <div class="play-btn"></div>
+                <div class="video-label">SAP SuccessFactors HCM Solution Overview Video</div>
+            </div>
+        </a>
+        <p style="text-align:center; font-size:0.92em; color:#666;">Кликнете за гледане в YouTube</p>
+    </div>
+
+    <!-- Slide 4: What is SAP SF -->
+    <div class="slide">
+        <h2>Какво представлява SAP SuccessFactors</h2>
+        <ul>
+            <li>Водещо <strong>облачно решение</strong> за управление на човешките ресурси (HR)</li>
+            <li>Оптимизира и <strong>дигитализира целия жизнен цикъл</strong> на служителите</li>
+            <li>Използвано от над <strong>10 000 компании</strong> по света с над <strong>267 милиона</strong> служители</li>
+            <li>Поддържа <strong>104 локализации</strong> – адаптирана към различни законови и езикови изисквания</li>
+            <li>Облачна платформа от тип <strong>Software-as-a-Service (SaaS)</strong> с достъп от всяка точка и по всяко време</li>
+            <li>Опция за <strong>хибридно внедряване</strong> – локално съхранение при нужда</li>
+        </ul>
+    </div>
+
+    <!-- Slide 5: Demo account -->
+    <div class="slide">
+        <h2>Създаване на демо акаунт</h2>
+        <div class="link-box">
+            <a href="https://www.sap.com/bulgaria/products/hcm/trial.html" target="_blank">
+                🔗 https://www.sap.com/bulgaria/products/hcm/trial.html
+            </a>
+        </div>
+        <ol class="steps-list">
+            <li>Предоставяне на необходимата информация за създаване на акаунт. Попълва се валиден имейл адрес, на който след успешна регистрация ще бъде изпратен имейл с линк за достъп.</li>
+            <li>В прозорец <em>"Регистрирайте се"</em> се попълват необходимите данни.</li>
+            <li>На посочения имейл адрес ще бъде изпратен имейл от SAP, съдържащ бутон <strong>"Click to activate your account"</strong>.</li>
+            <li>На имейл адреса се изпраща втори имейл от SAP, съдържащ линк за достъп до SAP SuccessFactors.</li>
+        </ol>
+    </div>
+
+    <!-- Slide 6: HR processes part 1 -->
+    <div class="slide">
+        <h2>Обхват на HR процесите (1/2)</h2>
+        <div class="two-columns">
+            <div>
+                <div class="info-card">
+                    <h4>💬 Continuous Feedback</h4>
+                    <p>Позволява обмен на обратна връзка в реално време между служители и мениджъри; насърчава открита комуникация.</p>
+                </div>
+                <div class="info-card">
+                    <h4>📈 Continuous Performance</h4>
+                    <p>Осигурява регулярни проверки на напредъка и корекции в целите; позволява в реално време да се следят резултатите.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🎓 Development</h4>
+                    <p>Подпомага планирането и управлението на кариерното развитие чрез индивидуални планове, обучения и менторства.</p>
+                </div>
+            </div>
+            <div>
+                <div class="info-card">
+                    <h4>🗂️ Employee Files</h4>
+                    <p>Централизирано място за съхранение на всички служителски данни, достъпни за HR екипа и служителите.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🎯 Goals</h4>
+                    <p>Позволява създаване и проследяване на SMART цели на корпоративно, екипно и индивидуално ниво, с AI помощ.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🏆 Growth Portfolio</h4>
+                    <p>Дава възможност на служителите да представят своите умения, постижения и сертификати.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: HR processes part 2 -->
+    <div class="slide">
+        <h2>Обхват на HR процесите (2/2)</h2>
+        <div class="two-columns">
+            <div>
+                <div class="info-card">
+                    <h4>📚 Learning</h4>
+                    <p>Модул за управление на обученията; позволява създаване на курсове и проследяване на напредъка.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🚀 Opportunity Marketplace</h4>
+                    <p>Свързва служителите с вътрешни възможности за развитие като проекти и временни роли.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🏢 Org Chart</h4>
+                    <p>Визуализира организационната структура, улеснявайки ориентирането в йерархията.</p>
+                </div>
+                <div class="info-card">
+                    <h4>⭐ Recognize</h4>
+                    <p>Насърчава cultura на признание чрез публично отбелязване на постижения и добри резултати.</p>
+                </div>
+            </div>
+            <div>
+                <div class="info-card">
+                    <h4>📊 Performance</h4>
+                    <p>Осигурява структурирано оценяване на представянето; поддържа 360-градусова оценка.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🔄 Succession</h4>
+                    <p>Подпомага планирането на приемствеността, идентифицирайки потенциални наследници за ключови позиции.</p>
+                </div>
+                <div class="info-card">
+                    <h4>🏖️ Request Time Off</h4>
+                    <p>Улеснява заявяването и одобряването на отпуски чрез централизирана система с мобилно приложение.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Practical tasks -->
+    <div class="slide">
+        <h2>Практически задачи</h2>
+        <div class="task-grid">
+            <div class="task-item">
+                <div class="task-icon">👤</div>
+                <div class="task-text">Преглед на информация за личен профил и профили на членовете на екипа</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">🏢</div>
+                <div class="task-text">Преглед на Organizational Chart</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">🎯</div>
+                <div class="task-text">Създаване на цел — лична и на член на екипа</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">📊</div>
+                <div class="task-text">Оценяване на представянето и даване на обратна връзка</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">⭐</div>
+                <div class="task-text">Поощряване на служител</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">📝</div>
+                <div class="task-text">Завършване на обучение за SAP SuccessFactors</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">🔍</div>
+                <div class="task-text">Проверка на кандидати по отворени позиции</div>
+            </div>
+            <div class="task-item">
+                <div class="task-icon">🏖️</div>
+                <div class="task-text">Заявяване на отпуск</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Resources -->
+    <div class="slide">
+        <h2>Полезни ресурси</h2>
+        <div class="link-box">
+            <a href="https://www.sap.com/bulgaria/products/hcm/what-is-sap-successfactors.html" target="_blank">
+                📖 SAP SuccessFactors – официална страница (България)
+            </a>
+        </div>
+        <div class="link-box">
+            <a href="https://www.sap.com/uk/products/hcm/about-successfactors.html" target="_blank">
+                📖 About SAP SuccessFactors (UK)
+            </a>
+        </div>
+        <div class="link-box">
+            <a href="https://www.ibm.com/think/topics/sap-successfactors" target="_blank">
+                🔍 IBM: Какво е SAP SuccessFactors?
+            </a>
+        </div>
+        <div class="link-box">
+            <a href="https://learning.sap-press.com/sap-successfactors#sap-successfactors-uses-cases" target="_blank">
+                🎓 SAP Press Learning – Use Cases
+            </a>
+        </div>
+        <div class="link-box">
+            <a href="https://help.sap.com/doc/00e5cdaba7f146f3bf046ea34a15a37a/2405/en-US/UserHelp_en-US.pdf" target="_blank">
+                📄 SAP SuccessFactors User Help (PDF)
+            </a>
+        </div>
+        <div class="link-box">
+            <a href="https://zalaris.com/consulting/resources/blog/sap-successfactors-modules-a-comprehensive-overview-for-hr-digitalisation" target="_blank">
+                🔗 Zalaris: Модулен преглед на SAP SuccessFactors
+            </a>
+        </div>
+    </div>
+
+    <!-- Slide 10: Thank you -->
+    <div class="slide">
+        <div class="thankyou-slide">
+            <div class="thankyou-icon">🙏</div>
+            <h1 style="margin-bottom:16px;">Благодаря за вниманието!</h1>
+            <p style="color:#666; font-size:1.15em; margin-bottom:32px;">SAP SuccessFactors – бъдещето на HR управлението</p>
+            <div class="stat-callout" style="padding:24px 40px; max-width:400px;">
+                <div style="font-size:1em; opacity:0.9;">Въпроси и дискусия</div>
+                <div style="font-size:2.2em; font-weight:900; margin-top:6px;">Q &amp; A</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button id="prevBtn" onclick="changeSlide(-1)">← Назад</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Напред →</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">10</span>
+    </div>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    document.getElementById('total').textContent = totalSlides;
+
+    function updateSlide() {
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentSlide);
+        });
+        document.getElementById('current').textContent = currentSlide + 1;
+        document.getElementById('progress').style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+        document.getElementById('prevBtn').disabled = currentSlide === 0;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+    }
+
+    function changeSlide(direction) {
+        currentSlide = Math.max(0, Math.min(totalSlides - 1, currentSlide + direction));
+        updateSlide();
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') changeSlide(-1);
+        if (e.key === 'ArrowRight') changeSlide(1);
+    });
+
+    updateSlide();
+</script>
+</body>
+</html>
